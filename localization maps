@@ -1,0 +1,39 @@
+#Title: Mapa de Localização de Municipios
+#Author: Vítor Ferreira
+#Date: 2022-16-04
+
+
+library(tidyverse)
+library(rnaturalearth)
+library(rnaturalearthhires)
+Bra <- ne_states(
+  country = "Brazil",
+  returnclass ="sf"
+)
+plot(Bra)
+
+#extraindo apenas Minas Gerais
+MG <- Bra[Bra$name_en == "Minas Gerais",]
+
+plot(MG)
+
+#localização coordenadas cidades
+getGeoCode("Lavras, Minas Gerais, Brazil")
+
+cidade <- c("Belo Horizonte","Lavras")
+latitude <- c(-19.92273,-21.24255)
+longitude <- c(-43.94509,-44.99920)
+
+dat <- data.frame(cidade, latitude, longitude)
+
+ggplot()+
+  geom_sf(data = Bra, fill = "white")+
+  geom_sf(data = MG, color = "black")+
+  geom_point(data = dat,
+             aes(x = longitude, y = latitude, color =cidade))+
+theme_light()+
+  labs(x = "Longitude",
+       y = "Latitude",
+       color = "Cidade")+
+ylim(-25, -13)+
+xlim(-53, -40)
